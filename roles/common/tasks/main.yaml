@@ -1,0 +1,29 @@
+---
+- name: Create user hng with sudo privileges
+  user:
+    name: hng
+    shell: /bin/bash
+    state: present
+    groups: sudo
+
+- name: Create directory for application
+  file:
+    path: "{{ app_dir }}"
+    state: directory
+    owner: hng
+    group: hng
+    mode: '0755'
+
+- name: Ensure the repository directory is safe for Git
+  command: git config --global --add safe.directory {{ app_dir }}
+  become: true
+
+- name: Clone the repository
+  git:
+    repo: "{{ repo_url }}"
+    dest: "{{ app_dir }}"
+    version: devops
+    update: yes
+    accept_hostkey: yes
+    force: yes
+  become: true

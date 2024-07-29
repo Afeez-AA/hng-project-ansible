@@ -1,0 +1,28 @@
+---
+- name: Automated Deployment and Configuration
+  hosts: hng
+  become: yes
+
+  roles:
+    - common
+    - postgresql
+    - redis
+    - nodejs
+    - application
+    - nginx
+
+  handlers:
+    - name: Restart Nginx
+      systemd:
+        name: nginx
+        state: restarted
+
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Reload Nginx
+      systemd:
+        name: nginx
+        state: reloaded
+

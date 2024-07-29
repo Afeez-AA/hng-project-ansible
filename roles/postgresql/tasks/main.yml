@@ -1,0 +1,26 @@
+---
+- name: Install PostgreSQL and dependencies
+  apt:
+    name:
+      - postgresql
+      - postgresql-contrib
+    state: present
+    update_cache: yes
+
+- name: Create PostgreSQL user
+  become: yes
+  command: sudo -u postgres psql -c "CREATE USER {{ pg_user }} WITH PASSWORD '{{ pg_admin_password }}';"
+  ignore_errors: yes
+
+- name: Create PostgreSQL database
+  become: yes
+  command: sudo -u postgres createdb -O {{ pg_user }} {{ pg_db }}
+  ignore_errors: yes
+
+- name: Grant privileges to user
+  become: yes
+  command: sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE {{ pg_db }} TO {{ pg_user }};"
+
+- name: Grant all privileges on public schema to admin
+  become: yes
+  command: sudo -u postgres psql -d {{ pg_db }} -c "GRANT ALL ON SCHEMA public TO {{ pg_user }};"

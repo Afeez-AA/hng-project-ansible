@@ -1,0 +1,31 @@
+---
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- name: Configure Nginx
+  template:
+    src: nginx_config.j2
+    dest: /etc/nginx/sites-available/aihomeworkprod
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload Nginx
+
+- name: Enable Nginx site configuration
+  file:
+    src: /etc/nginx/sites-available/aihomeworkprod
+    dest: /etc/nginx/sites-enabled/aihomeworkprod
+    state: link
+  notify:
+    - Reload Nginx
+
+- name: Remove default Nginx site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify:
+    - Reload Nginx

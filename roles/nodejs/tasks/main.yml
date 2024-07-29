@@ -1,0 +1,27 @@
+---
+- name: Install Node.js 18.x repository
+  shell: |
+    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+  args:
+    executable: /bin/bash
+
+- name: Install Node.js and npm
+  apt:
+    name: 
+      - nodejs
+    state: present
+    update_cache: yes
+
+- name: Check Node.js version
+  command: node --version
+  register: node_version
+  changed_when: false
+
+- name: Display Node.js version
+  debug:
+    var: node_version.stdout
+
+- name: Install Yarn
+  npm:
+    name: yarn
+    global: yes

@@ -1,0 +1,9 @@
+pg_admin_password: "admin123"
+pg_user: "admin"
+pg_db: "boilerplate_db"
+app_port: 3000
+app_dir: /opt/stage_5b
+log_dir: /var/log/stage_5b
+nginx_port: 80
+repo_url: "https://github.com/hngprojects/hng_boilerplate_expressjs.git"
+user_secrets_path: /var/secrets/pg_pw.txt

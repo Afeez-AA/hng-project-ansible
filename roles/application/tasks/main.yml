@@ -1,0 +1,62 @@
+---
+- name: Create .env file
+  template:
+    src: .env.j2
+    dest: "{{ app_dir }}/.env"
+    owner: hng
+    group: hng
+    mode: '0600'
+
+- name: Install application dependencies
+  become: yes
+  command: sudo -u hng yarn install --verbose
+  args:
+    chdir: "{{ app_dir }}"
+  register: yarn_result
+  ignore_errors: yes
+
+- name: Debug yarn install output
+  debug:
+    var: yarn_result
+  when: yarn_result is failed
+
+- name: Migrate Database
+  become: yes
+  command: sudo -u hng yarn migrate
+  args:
+    chdir: "{{ app_dir }}"
+
+- name: Ensure log directory exists
+  file:
+    path: "{{ log_dir }}"
+    state: directory
+    owner: hng
+    group: hng
+    mode: '0755'
+
+- name: Ensure log files exist
+  file:
+    path: "{{ log_dir }}/{{ item }}"
+    state: touch
+    owner: hng
+    group: hng
+    mode: '0644'
+  loop:
+    - out.log
+    - error.log
+
+- name: Create systemd service file
+  template:
+    src: aihomeworkprod.service.j2
+    dest: /etc/systemd/system/aihomeworkprod.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Reload systemd
+
+- name: Enable and start the service
+  systemd:
+    name: aihomeworkprod
+    enabled: yes
+    state: started

@@ -1,0 +1,11 @@
+---
+- name: Install Redis server
+  apt:
+    name: redis-server
+    state: present
+    update_cache: yes
+
+- name: Restart Redis server
+  systemd:
+    name: redis-server
+    state: restarted
