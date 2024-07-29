@@ -21,3 +21,5 @@ This repository contains the Ansible playbook and configuration for deploying an
 ```
 ### 3. Confirm deployment
  This can be done by pasting the target server ip on a broswer, the expected output should be an `hello world` displayed, then verify each api routes.
+
+ #### NB: After grading all variables will be encrypted using ansible vault

@@ -27,3 +27,12 @@
     accept_hostkey: yes
     force: yes
   become: true
+
+
+- name: Ensure directory for secrets exists
+  file:
+    path: "{{ user_secrets_path | dirname }}"
+    state: directory
+    mode: '0700'
+    owner: root
+    group: root
